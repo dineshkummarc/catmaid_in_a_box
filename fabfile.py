@@ -14,13 +14,16 @@ from datetime import datetime
 
 ## Amazon web configuration
 ### update with your settings
+### AWS access key and secret key can be located here: http://bit.ly/KiZ2VP
 
-aws_access_key_id = ''		# access key for account with launch priviledges 
+aws_access_key_id = ''		# access key for account with launch privileges 
 aws_secret_access_key = ''	# secret key, set EC2 keypair below!
 aws_size = 'm1.large' 		# or t1.micro
 aws_keypair = 'ec2-keypair'	# your ec2 keypair
 aws_AMI = 'ami-63be790a'	# ubuntu 10.04 LTS on US-East
 env.user = 'ubuntu' 		# default user
+localkeypath = ''               # path to your .pem file (or equivalent)
+env.key_filename = localkeypath
 
 
 # Creates a new instance with desired settings on aws
@@ -61,12 +64,12 @@ def installBasePackages():
 	'''Basic packages for building, version control'''
 	with settings(warn_only=True):
 		# Update image and install needed base components
-		run("sudo apt-get -y update", pty = True)
-		run("sudo apt-get -y upgrade", pty = True)		
+		run("sudo apt-get -y --force-yes update", pty = True)
+		run("sudo apt-get -y --force-yes upgrade", pty = True)		
 		packagelist = ['git-core', 'mercurial', 'subversion', 'unzip', 'build-essential', 'g++']
 		for each_package in packagelist: 
 			print each_package
-			run('sudo apt-get -y install %s' % each_package, pty = True)
+			run('sudo apt-get -y --force-yes install %s' % each_package, pty = True)
 
 
 # Basic packages for catmaid
@@ -77,7 +80,7 @@ def installCatmaid():
 		packagelist = ['libapache2-mod-php5', 'php5-pgsql', 'imagemagick', 'python-psycopg2', 'python-yaml', 'postgresql','pgadmin3','phppgadmin','postgresql-contrib']
 		for each_package in packagelist: 
 			print each_package
-			run('sudo apt-get -y install %s' % each_package, pty = True)
+			run('sudo apt-get -y --force-yes install %s' % each_package, pty = True)
 
 		run('git clone https://github.com/acardona/CATMAID.git')
 		sudo('rm -rvf /var/www/CATMAID')
@@ -110,7 +113,7 @@ def installCatmaid():
 
 def installFIJI():
 	with settings(warn_only=True):
-		sudo('apt-get install -y libxtst-dev')
+		sudo('apt-get install -y --force-yes libxtst-dev')
 		run('wget http://fiji.sc/downloads/Madison/fiji-linux64-20110307.tar.bz2')
 		run('tar xvjf fiji-linux64-20110307.tar.bz2')
 
@@ -122,7 +125,7 @@ def installImageComponents():
             packagelist = ['libjpeg62-dev', 'libtiff-dev']
             for each_package in packagelist: 
                     print each_package
-                    run('sudo apt-get -y install %s' % each_package, pty = True)
+                    run('sudo apt-get -y --force-yes install %s' % each_package, pty = True)
     
             # install kakadu libraries here
             kakadu_tools = 'http://s3.amazonaws.com/wholeslide/installs/Kakadu_v6_3_1-00781N_Linux-64-bit-Compiled.tar.gz' 
